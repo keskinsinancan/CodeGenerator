@@ -104,8 +104,9 @@ function RegisterHelpers() {
     }
     return result.join('');
   });
+  var temp = "";
 }
-// branch asdsafasdaf
+
 app.get("/", (req, res) => {
   request(
     {
@@ -125,5 +126,5 @@ app.get("/", (req, res) => {
     }
   );
 });
-
+// burak idi
 app.listen(3000, () => console.log("Example app listening on port 3000!"));
