@@ -107,7 +107,7 @@ function RegisterHelpers() {
     return result.join('');
   });
 }
-
+var asd = "";
 app.get("/", (req, res) => {
   request(
     {
