@@ -80,7 +80,6 @@ function RegisterHelpers() {
     return path.split("/")[1];
   });
   Handlebars.registerHelper("distinct", function(context, options) {
-    let out = "";
     var data;
     if (options.data) {
       data = Handlebars.createFrame(options.data);
@@ -124,6 +123,48 @@ function RegisterHelpers() {
       return str.substring(0,str.length - 2);      
     }
     return "";
+  });
+  Handlebars.registerHelper("getBodyParameter", function(parameter){
+    return GetTypeFromRef(String(parameter.schema.$ref)).toLowerCase();
+  });
+  Handlebars.registerHelper("getRequestPathParameters",function(requestMethod,options){
+    var data;
+    result = []
+    if (options.data) {
+      data = Handlebars.createFrame(options.data);
+    }
+    for(var parameter in requestMethod.parameters){
+      if(requestMethod.parameters[parameter].in === "path"){
+        result.push(options.fn(requestMethod.parameters[parameter], { data: data }));
+      }
+    }
+    return result.join("");
+  });
+  Handlebars.registerHelper("getRequestQueryParameters",function(requestMethod,options){
+    var data;
+    result = []
+    if (options.data) {
+      data = Handlebars.createFrame(options.data);
+    }
+    for(var parameter in requestMethod.parameters){
+      if(requestMethod.parameters[parameter].in === "query"){
+        result.push(options.fn(requestMethod.parameters[parameter], { data: data }));
+      }
+    }
+    return result.join("");
+  });
+  Handlebars.registerHelper("getRequestBodyParameters",function(requestMethod,options){
+    var data;
+    result = []
+    if (options.data) {
+      data = Handlebars.createFrame(options.data);
+    }
+    for(var parameter in requestMethod.parameters){
+      if(requestMethod.parameters[parameter].in === "body"){
+        result.push(options.fn(requestMethod.parameters[parameter], { data: data }));
+      }
+    }
+    return result.join("");
   });
 }
 var asd = "";
