@@ -104,8 +104,6 @@ function RegisterHelpers() {
     }
     return result.join('');
   });
-  let a = 31;
-  var temp = "";
 }
 
 app.get("/", (req, res) => {
@@ -127,6 +125,5 @@ app.get("/", (req, res) => {
     }
   );
 });
-//sinan can keskin
-// burak idi
+
 app.listen(3000, () => console.log("Example app listening on port 3000!"));
