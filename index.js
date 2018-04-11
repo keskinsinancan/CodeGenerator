@@ -3,6 +3,8 @@ const app = express();
 const fs = require("fs");
 const Handlebars = require("handlebars");
 var request = require("request");
+var test ="sinan can keskin";
+
 
 function GetTypeFromRef(_ref) {
   if (_ref[0] === "#") {
