@@ -1,0 +1,42 @@
+using System;
+using System.Collections.Generic;
+using System.Text;
+using RestSharp;
+
+// -------------------------------- //
+// IMPORTANT!!!!!!                  //
+// Import RestSharp from NUGET!!!   //
+// -------------------------------- //
+{{#distinct paths}}
+    {{@changed}}
+{{/distinct}}
+
+
+namespace RestClient
+{
+    {{#distinct paths}}
+    {{#if @changed}}
+    } {{@changed}} -- {{@key}}
+    
+    {{/if}}
+    {{#if @group}}
+    public class {{getRoot @key}}RestClient{
+        private readonly RestSharp.RestClient _restClient;
+
+        public {{getRoot @key}}RestClient(){
+            this._restClient = new RestSharp.RestClient("{{getBaseUrl @../this}}");
+        }
+    {{/if}}
+        {{#each this}}
+
+        public void {{this.operationId}}(){
+            var request = new RestRequest(Method.{{toUpperCase @key}});
+            request.Resource = "{{@../key}}",
+            request.AddHeader("Accept", "application/json");
+
+            var response = _restClient.Execute(request);
+        }
+        {{/each}}
+    {{/distinct}}
+    }
+}

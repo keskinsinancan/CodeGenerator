@@ -1,0 +1,13 @@
+namespace {{getTitle this}}{
+
+    {{#each definitions}}
+    public class {{@key}} {
+
+        {{#each this.properties}}
+        public {{getType this}} {{@key}}{ get; set;}
+
+        {{/each}}
+    }
+
+    {{/each}}
+}
