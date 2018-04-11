@@ -22,28 +22,23 @@ function RegisterHelpers() {
           switch (property.format) {
             case "int64":
               return "Int64";
-              break;
             default:
               return "int";
           }
-          break;
+
         case "number":
           return "float";
-          break;
 
         case "boolean": //if type is boolean
           return "bool";
-          break;
 
         case "string": //if type is string
           switch (property.format) {
             case "date-time":
               return "DateTime";
-              break;
             default:
               return "string";
           }
-          break;
 
         case "array": //if type is array
           if (property.items.type) {
@@ -52,11 +47,12 @@ function RegisterHelpers() {
             return GetTypeFromRef(property.items.$ref) + "[]";
           }
           return "Array";
-          break;
 
         default:
           return property.type;
+
       }
+      
     } else if (property.$ref) {
       return GetTypeFromRef(property.$ref);
     }
