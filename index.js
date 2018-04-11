@@ -104,6 +104,7 @@ function RegisterHelpers() {
     }
     return result.join('');
   });
+  let a = 31;
 }
 // branch asdsafasdaf
 app.get("/", (req, res) => {
