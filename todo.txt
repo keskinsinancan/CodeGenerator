@@ -1,5 +1,5 @@
 1- Fonksiyonların return tipleri değişecek.
-2- Fonksiyon parametreleri ayarlanacak.
-3- Request parametreleri ayarlanacak.
-4- Fonksiyonlara gelen nesneler handle edilecek.
+2- Fonksiyon parametreleri ayarlanacak. OK
+3- Request parametreleri ayarlanacak. OK
+4- Fonksiyonlara gelen nesneler handle edilecek. OK-
 5- Retun statuslara göre uyarılar yazdırılacak.
