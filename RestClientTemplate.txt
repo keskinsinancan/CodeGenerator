@@ -12,8 +12,11 @@ namespace RestClient
 {
     {{#distinct paths}}
     {{#if @changed}}
+    asdgg
+    sfas
     }
-    
+    asdg
+    asdfas
     {{/if}}
     {{#if @group}}
     public class {{getRoot @key}}RestClient{
