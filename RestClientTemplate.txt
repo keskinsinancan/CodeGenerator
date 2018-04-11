@@ -25,9 +25,9 @@ namespace RestClient
     {{/if}}
         {{#each this}}
 
-        public void {{this.operationId}}(){
+        public void {{this.operationId}}({{getFunctionParameters this}}){
             var request = new RestRequest(Method.{{toUpperCase @key}});
-            request.Resource = "{{@../key}}",
+            request.Resource = "{{@../key}}";
             request.AddHeader("Accept", "application/json");
 
             var response = _restClient.Execute(request);

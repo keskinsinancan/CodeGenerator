@@ -3,56 +3,56 @@ const app = express();
 const fs = require("fs");
 const Handlebars = require("handlebars");
 var request = require("request");
-var test ="sinan can keskin";
-
 
 function GetTypeFromRef(_ref) {
   if (_ref[0] === "#") {
     return _ref.slice(_ref.lastIndexOf("/") + 1);
   }
-  return property.$ref;
+  return _ref;
+}
+
+function GetTypeFromType(property) {
+  switch (property.type) {
+    case "integer": //if type is integer
+      switch (property.format) {
+        case "int64":
+          return "Int64";
+        default:
+          return "int";
+      }
+
+    case "number":
+      return "float";
+
+    case "boolean": //if type is boolean
+      return "bool";
+
+    case "string": //if type is string
+      switch (property.format) {
+        case "date-time":
+          return "DateTime";
+        default:
+          return "string";
+      }
+
+    case "array": //if type is array
+      if (property.items.type) {
+        return property.items.type + "[]";
+      } else if (property.items.$ref) {
+        return GetTypeFromRef(property.items.$ref) + "[]";
+      }
+      return "Array";
+
+    default:
+      return property.type;
+  }
 }
 
 function RegisterHelpers() {
   Handlebars.registerHelper("getType", function(property) {
     //Returns type of property
     if (property.type) {
-      switch (property.type) {
-        case "integer": //if type is integer
-          switch (property.format) {
-            case "int64":
-              return "Int64";
-            default:
-              return "int";
-          }
-
-        case "number":
-          return "float";
-
-        case "boolean": //if type is boolean
-          return "bool";
-
-        case "string": //if type is string
-          switch (property.format) {
-            case "date-time":
-              return "DateTime";
-            default:
-              return "string";
-          }
-
-        case "array": //if type is array
-          if (property.items.type) {
-            return property.items.type + "[]";
-          } else if (property.items.$ref) {
-            return GetTypeFromRef(property.items.$ref) + "[]";
-          }
-          return "Array";
-
-        default:
-          return property.type;
-
-      }
-      
+      return GetTypeFromType(property);
     } else if (property.$ref) {
       return GetTypeFromRef(property.$ref);
     }
@@ -79,28 +79,51 @@ function RegisterHelpers() {
   Handlebars.registerHelper("getRoot", function(path) {
     return path.split("/")[1];
   });
-  Handlebars.registerHelper("distinct", function(context,options) {
+  Handlebars.registerHelper("distinct", function(context, options) {
     let out = "";
     var data;
     if (options.data) {
-        data = Handlebars.createFrame(options.data);
+      data = Handlebars.createFrame(options.data);
     }
 
     var result = [];
-    var name = '';
+    var name = "";
     var change = Object.keys(context)[0].split("/")[1];
     for (var propertyName in context) {
       var temp = propertyName.split("/")[1];
       if (data) {
-        data.group = name !== temp ;
+        data.group = name !== temp;
         data.key = propertyName;
         data.changed = change !== temp;
       }
-      result.push( options.fn(context[propertyName], {data: data}));
+      result.push(options.fn(context[propertyName], { data: data }));
       name = temp;
       change = temp;
     }
-    return result.join('');
+    return result.join("");
+  });
+  Handlebars.registerHelper("getFunctionParameters", function(requestMethod) {
+    let str = "";
+    for (var parameter in requestMethod.parameters) {
+
+      if(!requestMethod.parameters[parameter].type){
+        let ref = String(requestMethod.parameters[parameter].schema.$ref);
+        str += GetTypeFromRef(ref) + " " +
+        GetTypeFromRef(ref).toLowerCase() + ", "; 
+      }else{
+        str += 
+        GetTypeFromType(requestMethod.parameters[parameter]);
+        if(!requestMethod.parameters[parameter].required){
+          str += "?";
+        }
+        str += " " + requestMethod.parameters[parameter].name + ", ";
+      }
+      
+    }
+    if(str != ""){
+      return str.substring(0,str.length - 2);      
+    }
+    return "";
   });
 }
 var asd = "";
