@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.IO;
 using RestSharp;
 
 // -------------------------------- //
@@ -38,18 +39,32 @@ namespace RestClient
                 request.AddQueryParameter("{{this.name}}",parameter); //Query parameter
             }
             {{else}}
-            request.AddQueryParameter("{{this.name}}",parameter); //Query parameter
+            request.AddQueryParameter("{{this.name}}",{{this.name}}); //Query parameter
             {{/if}}
             {{/getRequestQueryParameters}}
             {{#getRequestBodyParameters this}}
             request.AddBody({{getBodyParameter this}}); //Body parameter
             {{/getRequestBodyParameters}}
 
-            {{#if (getReturnType this)}}
-            return _restClient.Execute<{{getReturnType this}}>(request);
+            {{#if (getReturnTypeIfObject this)}}
+            return _restClient.Execute<{{getReturnTypeIfObject this}}>(request).Data;
+            {{/if}}
+            {{#if (getReturnTypeIfSingle this)}}
+            return _restClient.Execute(request).Content;
             {{/if}}   
         }
         {{/each}}
     {{/distinct}}
     }
+
+    {{#each definitions}}
+    public class {{@key}} {
+
+        {{#each this.properties}}
+        public {{getType this}} {{@key}}{ get; set;}
+
+        {{/each}}
+    }
+
+    {{/each}}
 }

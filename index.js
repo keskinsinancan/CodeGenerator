@@ -44,7 +44,9 @@ function GetTypeFromType(property) {
       }
       return "Array";
     case "object":
-      return "Object"
+      return "Object";
+    case "file":
+      return "File";
     default:
       return property.type;
   }
@@ -115,7 +117,7 @@ function RegisterHelpers() {
         }else if(requestMethod.parameters[parameter].schema.type){
           if(requestMethod.parameters[parameter].schema.type === "array"){
             str += GetTypeFromRef(requestMethod.parameters[parameter].schema.items.$ref) +"[] " +
-            GetTypeFromRef(requestMethod.parameters[parameter].schema.items.$ref).toLowerCase() + "s, ";
+            GetTypeFromRef(requestMethod.parameters[parameter].schema.items.$ref).toLowerCase() + ", ";
           }else{
             str += "!!!!UNKNOWN!!!!, "
           }
@@ -137,6 +139,9 @@ function RegisterHelpers() {
     return "";
   });
   Handlebars.registerHelper("getBodyParameter", function(parameter){
+    if(parameter.schema.type === "array"){
+      return GetTypeFromRef(parameter.schema.items.$ref).toLowerCase();  
+    }
     return GetTypeFromRef(parameter.schema.$ref).toLowerCase();
   });
   Handlebars.registerHelper("getRequestPathParameters",function(requestMethod,options){
@@ -200,6 +205,30 @@ function RegisterHelpers() {
         
     } 
   });
+  Handlebars.registerHelper("getReturnTypeIfObject", function(requestMethod){
+    let succesResponse = requestMethod.responses["200"];
+    if(succesResponse){
+      if(succesResponse.schema.type){
+        if(succesResponse.schema.type === "array"){
+          return new Handlebars.SafeString("List<" + 
+          GetTypeFromRef(succesResponse.schema.items.$ref) + ">");
+        }
+      }else if(succesResponse.schema.$ref){
+        return GetTypeFromRef(succesResponse.schema.$ref);
+      }  
+    } 
+  });
+  Handlebars.registerHelper("getReturnTypeIfSingle", function(requestMethod){
+    let succesResponse = requestMethod.responses["200"];
+    if(succesResponse){
+      if(succesResponse.schema.type){
+        if(succesResponse.schema.type !== "array"){
+          return GetTypeFromType(succesResponse.schema);
+        } 
+      }
+    } 
+  });
+
 }
 var asd = "";
 app.get("/", (req, res) => {

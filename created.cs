@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.IO;
 using RestSharp;
 
 // -------------------------------- //
@@ -41,7 +42,7 @@ namespace RestClient
                 request.AddQueryParameter("status",parameter); //Query parameter
             }
 
-            return _restClient.Execute<List<Pet>>(request);
+            return _restClient.Execute<List<Pet>>(request).Data;
         }
 
         public List<Pet> findPetsByTags(string[] tags){
@@ -52,7 +53,7 @@ namespace RestClient
                 request.AddQueryParameter("tags",parameter); //Query parameter
             }
 
-            return _restClient.Execute<List<Pet>>(request);
+            return _restClient.Execute<List<Pet>>(request).Data;
         }
 
         public Pet getPetById(Int64 petId){
@@ -61,7 +62,7 @@ namespace RestClient
             request.AddHeader("Accept", "application/json");
             request.AddParameter("petId",petId,ParameterType.UrlSegment); //Path parameter
 
-            return _restClient.Execute<Pet>(request);
+            return _restClient.Execute<Pet>(request).Data;
         }
 
         public void updatePetWithForm(Int64 petId, string? name, string? status){
@@ -80,13 +81,13 @@ namespace RestClient
 
         }
 
-        public ApiResponse uploadFile(Int64 petId, string? additionalMetadata, file? file){
+        public ApiResponse uploadFile(Int64 petId, string? additionalMetadata, File? file){
             var request = new RestRequest(Method.POST);
             request.Resource = "/pet/{petId}/uploadImage";
             request.AddHeader("Accept", "application/json");
             request.AddParameter("petId",petId,ParameterType.UrlSegment); //Path parameter
 
-            return _restClient.Execute<ApiResponse>(request);
+            return _restClient.Execute<ApiResponse>(request).Data;
         }
     }
 
@@ -102,7 +103,7 @@ namespace RestClient
             request.Resource = "/store/inventory";
             request.AddHeader("Accept", "application/json");
 
-            return _restClient.Execute<Object>(request);
+            return _restClient.Execute(request).Content;
         }
 
         public Order placeOrder(Order order){
@@ -111,7 +112,7 @@ namespace RestClient
             request.AddHeader("Accept", "application/json");
             request.AddBody(order); //Body parameter
 
-            return _restClient.Execute<Order>(request);
+            return _restClient.Execute<Order>(request).Data;
         }
 
         public Order getOrderById(Int64 orderId){
@@ -120,7 +121,7 @@ namespace RestClient
             request.AddHeader("Accept", "application/json");
             request.AddParameter("orderId",orderId,ParameterType.UrlSegment); //Path parameter
 
-            return _restClient.Execute<Order>(request);
+            return _restClient.Execute<Order>(request).Data;
         }
 
         public void deleteOrder(Int64 orderId){
@@ -147,19 +148,19 @@ namespace RestClient
 
         }
 
-        public void createUsersWithArrayInput(User[] users){
+        public void createUsersWithArrayInput(User[] user){
             var request = new RestRequest(Method.POST);
             request.Resource = "/user/createWithArray";
             request.AddHeader("Accept", "application/json");
-            request.AddBody(undefined); //Body parameter
+            request.AddBody(user); //Body parameter
 
         }
 
-        public void createUsersWithListInput(User[] users){
+        public void createUsersWithListInput(User[] user){
             var request = new RestRequest(Method.POST);
             request.Resource = "/user/createWithList";
             request.AddHeader("Accept", "application/json");
-            request.AddBody(undefined); //Body parameter
+            request.AddBody(user); //Body parameter
 
         }
 
@@ -167,10 +168,10 @@ namespace RestClient
             var request = new RestRequest(Method.GET);
             request.Resource = "/user/login";
             request.AddHeader("Accept", "application/json");
-            request.AddQueryParameter("username",parameter); //Query parameter
-            request.AddQueryParameter("password",parameter); //Query parameter
+            request.AddQueryParameter("username",username); //Query parameter
+            request.AddQueryParameter("password",password); //Query parameter
 
-            return _restClient.Execute<string>(request);
+            return _restClient.Execute(request).Content;
         }
 
         public void logoutUser(){
@@ -186,7 +187,7 @@ namespace RestClient
             request.AddHeader("Accept", "application/json");
             request.AddParameter("username",username,ParameterType.UrlSegment); //Path parameter
 
-            return _restClient.Execute<User>(request);
+            return _restClient.Execute<User>(request).Data;
         }
 
         public void updateUser(string username, User user){
@@ -206,4 +207,83 @@ namespace RestClient
 
         }
     }
+
+    public class Order {
+
+        public Int64 id{ get; set;}
+
+        public Int64 petId{ get; set;}
+
+        public int quantity{ get; set;}
+
+        public DateTime shipDate{ get; set;}
+
+        public string status{ get; set;}
+
+        public bool complete{ get; set;}
+
+    }
+
+    public class User {
+
+        public Int64 id{ get; set;}
+
+        public string username{ get; set;}
+
+        public string firstName{ get; set;}
+
+        public string lastName{ get; set;}
+
+        public string email{ get; set;}
+
+        public string password{ get; set;}
+
+        public string phone{ get; set;}
+
+        public int userStatus{ get; set;}
+
+    }
+
+    public class Category {
+
+        public Int64 id{ get; set;}
+
+        public string name{ get; set;}
+
+    }
+
+    public class Tag {
+
+        public Int64 id{ get; set;}
+
+        public string name{ get; set;}
+
+    }
+
+    public class Pet {
+
+        public Int64 id{ get; set;}
+
+        public Category category{ get; set;}
+
+        public string name{ get; set;}
+
+        public string[] photoUrls{ get; set;}
+
+        public Tag[] tags{ get; set;}
+
+        public string status{ get; set;}
+
+    }
+
+    public class ApiResponse {
+
+        public int code{ get; set;}
+
+        public string type{ get; set;}
+
+        public string message{ get; set;}
+
+    }
+
 }
