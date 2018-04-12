@@ -25,23 +25,29 @@ namespace RestClient
     {{/if}}
         {{#each this}}
 
-        public void {{this.operationId}}({{getFunctionParameters this}}){
+        public {{#if (getReturnType this)}}{{getReturnType this}}{{else}}void{{/if}} {{this.operationId}}({{getFunctionParameters this}}){
             var request = new RestRequest(Method.{{toUpperCase @key}});
             request.Resource = "{{@../key}}";
+            request.AddHeader("Accept", "application/json");
             {{#getRequestPathParameters this}}
             request.AddParameter("{{this.name}}",{{this.name}},ParameterType.UrlSegment); //Path parameter
             {{/getRequestPathParameters}}
             {{#getRequestQueryParameters this}}
-            foreach(var parameter in {{this.name}}){//--------------Dizi gelmezse yandik!!!!!!!!!!!!!!!!
+            {{#if @isArray}}
+            foreach(var parameter in {{this.name}}){
                 request.AddQueryParameter("{{this.name}}",parameter); //Query parameter
             }
+            {{else}}
+            request.AddQueryParameter("{{this.name}}",parameter); //Query parameter
+            {{/if}}
             {{/getRequestQueryParameters}}
             {{#getRequestBodyParameters this}}
             request.AddBody({{getBodyParameter this}}); //Body parameter
             {{/getRequestBodyParameters}}
-            request.AddHeader("Accept", "application/json");
 
-            var response = _restClient.Execute(request);
+            {{#if (getReturnType this)}}
+            return _restClient.Execute<{{getReturnType this}}>(request);
+            {{/if}}   
         }
         {{/each}}
     {{/distinct}}

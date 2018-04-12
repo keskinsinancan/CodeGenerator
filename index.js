@@ -5,6 +5,7 @@ const Handlebars = require("handlebars");
 var request = require("request");
 
 function GetTypeFromRef(_ref) {
+  _ref = String(_ref)
   if (_ref[0] === "#") {
     return _ref.slice(_ref.lastIndexOf("/") + 1);
   }
@@ -42,7 +43,8 @@ function GetTypeFromType(property) {
         return GetTypeFromRef(property.items.$ref) + "[]";
       }
       return "Array";
-
+    case "object":
+      return "Object"
     default:
       return property.type;
   }
@@ -106,9 +108,19 @@ function RegisterHelpers() {
     for (var parameter in requestMethod.parameters) {
 
       if(!requestMethod.parameters[parameter].type){
-        let ref = String(requestMethod.parameters[parameter].schema.$ref);
-        str += GetTypeFromRef(ref) + " " +
-        GetTypeFromRef(ref).toLowerCase() + ", "; 
+        if(requestMethod.parameters[parameter].schema.$ref){
+          let ref = requestMethod.parameters[parameter].schema.$ref;
+          str += GetTypeFromRef(ref) + " " +
+          GetTypeFromRef(ref).toLowerCase() + ", "; 
+        }else if(requestMethod.parameters[parameter].schema.type){
+          if(requestMethod.parameters[parameter].schema.type === "array"){
+            str += GetTypeFromRef(requestMethod.parameters[parameter].schema.items.$ref) +"[] " +
+            GetTypeFromRef(requestMethod.parameters[parameter].schema.items.$ref).toLowerCase() + "s, ";
+          }else{
+            str += "!!!!UNKNOWN!!!!, "
+          }
+        }
+        
       }else{
         str += 
         GetTypeFromType(requestMethod.parameters[parameter]);
@@ -125,7 +137,7 @@ function RegisterHelpers() {
     return "";
   });
   Handlebars.registerHelper("getBodyParameter", function(parameter){
-    return GetTypeFromRef(String(parameter.schema.$ref)).toLowerCase();
+    return GetTypeFromRef(parameter.schema.$ref).toLowerCase();
   });
   Handlebars.registerHelper("getRequestPathParameters",function(requestMethod,options){
     var data;
@@ -147,6 +159,11 @@ function RegisterHelpers() {
       data = Handlebars.createFrame(options.data);
     }
     for(var parameter in requestMethod.parameters){
+      if (data && requestMethod.parameters[parameter].type !== "array") {
+        data.isArray = false;
+      }else{
+        data.isArray = true;
+      }
       if(requestMethod.parameters[parameter].in === "query"){
         result.push(options.fn(requestMethod.parameters[parameter], { data: data }));
       }
@@ -165,6 +182,23 @@ function RegisterHelpers() {
       }
     }
     return result.join("");
+  });
+  Handlebars.registerHelper("getReturnType", function(requestMethod){
+    let succesResponse = requestMethod.responses["200"];
+    if(succesResponse){
+      if(succesResponse.schema.type){
+        if(succesResponse.schema.type === "array"){
+          return new Handlebars.SafeString("List<" + 
+          GetTypeFromRef(succesResponse.schema.items.$ref) + ">");
+        }else{
+          return GetTypeFromType(succesResponse.schema);
+        }
+        
+      }else if(succesResponse.schema.$ref){
+        return GetTypeFromRef(succesResponse.schema.$ref);
+      }
+        
+    } 
   });
 }
 var asd = "";
