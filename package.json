@@ -1,15 +1,14 @@
 {
-  "name": "package.json",
+  "name": "codegen",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {
-    "test": "test"
-  },
+  "preferGlobal": true,
+  "bin": "./index.js",
   "author": "me",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.16.3",
+    "commander": "^2.15.1",
     "handlebars": "^4.0.11",
     "request": "^2.85.0"
   }

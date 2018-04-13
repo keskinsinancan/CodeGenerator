@@ -1,5 +1,6 @@
-const express = require("express");
-const app = express();
+#!/usr/bin/env node
+
+const program = require('commander');
 const fs = require("fs");
 const Handlebars = require("handlebars");
 var request = require("request");
@@ -230,25 +231,26 @@ function RegisterHelpers() {
   });
 
 }
-var asd = "";
-app.get("/", (req, res) => {
-  request(
-    {
-      url: "http://petstore.swagger.io/v2/swagger.json",
-      json: true
-    },
-    function(error, response, body) {
-      if (!error && response.statusCode === 200) {
-        fs.readFile("RestClientTemplate.txt", "utf8", function(err, source) {
-          RegisterHelpers();
-          var template = Handlebars.compile(source);
-          var result = template(body);
-          res.send(result);
-          fs.writeFileSync("created.cs", result);
-        });
-      }
-    }
-  );
-});
 
-app.listen(3000, () => console.log("Example app listening on port 3000!"));
+program
+  .version('0.0.1')
+  .option('-l, --list [list]', 'list of customers in CSV file')
+  .parse(process.argv)
+console.log(process.argv);
+
+request(
+  {
+    url: "http://petstore.swagger.io/v2/swagger.json",
+    json: true
+  },
+  function(error, response, body) {
+    if (!error && response.statusCode === 200) {
+      fs.readFile("RestClientTemplate.txt", "utf8", function(err, source) {
+        RegisterHelpers();
+        var template = Handlebars.compile(source);
+        var result = template(body);
+        fs.writeFileSync("created.cs", result);
+      });
+    }
+  }
+);
