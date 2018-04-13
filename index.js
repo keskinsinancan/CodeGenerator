@@ -5,12 +5,11 @@ const fs = require("fs");
 const Handlebars = require("handlebars");
 var request = require("request");
 
+const transform  = require( "./transform");
+
 function GetTypeFromRef(_ref) {
   _ref = String(_ref)
-  if (_ref[0] === "#") {
-    return _ref.slice(_ref.lastIndexOf("/") + 1);
-  }
-  return _ref;
+  return _ref[0] === "#" ? _ref.slice(_ref.lastIndexOf("/") + 1) : _ref;
 }
 
 function GetTypeFromType(property) {
@@ -247,6 +246,7 @@ request(
     if (!error && response.statusCode === 200) {
       fs.readFile("RestClientTemplate.txt", "utf8", function(err, source) {
         RegisterHelpers();
+        console.log(transform.transform(body));
         var template = Handlebars.compile(source);
         var result = template(body);
         fs.writeFileSync("created.cs", result);
