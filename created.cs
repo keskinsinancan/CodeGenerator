@@ -20,60 +20,81 @@ namespace RestClient
                 this._restClient = new RestSharp.RestClient("http://petstore.swagger.io/v2");
             }
 
-            public void addPet(Pet body){ 
+            // Add a new pet to the store
+            public void addPet(Pet pet){ 
                 var request = new RestRequest(Method.POST); 
                 request.Resource = "/pet";
                 request.AddHeader("Accept", "application/json");
-
+                request.AddBody(pet);
+                
             }
 
-            public void updatePet(Pet body){ 
+            // Update an existing pet
+            public void updatePet(Pet pet){ 
                 var request = new RestRequest(Method.PUT); 
                 request.Resource = "/pet";
                 request.AddHeader("Accept", "application/json");
-
+                request.AddBody(pet);
+                
             }
 
-            public void findPetsByStatus(string[] status){ 
+            // Finds Pets by status
+            public List<Pet> findPetsByStatus(string[] status){ 
                 var request = new RestRequest(Method.GET); 
                 request.Resource = "/pet/findByStatus";
                 request.AddHeader("Accept", "application/json");
-
+                request.AddQueryParameter("status",status); // Array geldiginde sorun!!!!!!
+                return _restClient.Execute<List<Pet>>(request).Data;
             }
 
-            public void findPetsByTags(string[] tags){ 
+            // Finds Pets by tags
+            public List<Pet> findPetsByTags(string[] tags){ 
                 var request = new RestRequest(Method.GET); 
                 request.Resource = "/pet/findByTags";
                 request.AddHeader("Accept", "application/json");
-
+                request.AddQueryParameter("tags",tags); // Array geldiginde sorun!!!!!!
+                return _restClient.Execute<List<Pet>>(request).Data;
             }
 
-            public void getPetById(long petId){ 
+            // Find pet by ID
+            public Pet getPetById(long petId){ 
                 var request = new RestRequest(Method.GET); 
                 request.Resource = "/pet/{petId}";
                 request.AddHeader("Accept", "application/json");
-
+                request.AddParameter("petId",petId);
+                return _restClient.Execute<Pet>(request).Data;
             }
 
+            // Updates a pet in the store with form data
             public void updatePetWithForm(long petId, string name, string status){ 
                 var request = new RestRequest(Method.POST); 
                 request.Resource = "/pet/{petId}";
                 request.AddHeader("Accept", "application/json");
-
+                request.AddParameter("petId",petId);
+                request.AddParameter("name",name);//????????
+                request.AddParameter("status",status);//????????
+                
             }
 
+            // Deletes a pet
             public void deletePet(string api_key, long petId){ 
                 var request = new RestRequest(Method.DELETE); 
                 request.Resource = "/pet/{petId}";
                 request.AddHeader("Accept", "application/json");
-
+                request.AddHeader("api_key",api_key);
+                request.AddParameter("petId",petId);
+                
             }
 
-            public void uploadFile(long petId, string additionalMetadata, File file){ 
+            // uploads an image
+            public ApiResponse uploadFile(long petId, string additionalMetadata, File file){ 
                 var request = new RestRequest(Method.POST); 
                 request.Resource = "/pet/{petId}/uploadImage";
                 request.AddHeader("Accept", "application/json");
-
+                request.AddParameter("petId",petId);
+                request.AddParameter("additionalMetadata",additionalMetadata);//????????
+                request.AddParameter("file",file);//????????
+                return _restClient.Execute<ApiResponse>(request).Data;
             }
 
         }
@@ -85,32 +106,39 @@ namespace RestClient
                 this._restClient = new RestSharp.RestClient("http://petstore.swagger.io/v2");
             }
 
-            public void getInventory(){ 
+            // Returns pet inventories by status
+            public Object getInventory(){ 
                 var request = new RestRequest(Method.GET); 
                 request.Resource = "/store/inventory";
                 request.AddHeader("Accept", "application/json");
-
+                return _restClient.Execute(request).Content;
             }
 
-            public void placeOrder(Order body){ 
+            // Place an order for a pet
+            public Order placeOrder(Order order){ 
                 var request = new RestRequest(Method.POST); 
                 request.Resource = "/store/order";
                 request.AddHeader("Accept", "application/json");
-
+                request.AddBody(order);
+                return _restClient.Execute<Order>(request).Data;
             }
 
-            public void getOrderById(long orderId){ 
+            // Find purchase order by ID
+            public Order getOrderById(long orderId){ 
                 var request = new RestRequest(Method.GET); 
                 request.Resource = "/store/order/{orderId}";
                 request.AddHeader("Accept", "application/json");
-
+                request.AddParameter("orderId",orderId);
+                return _restClient.Execute<Order>(request).Data;
             }
 
+            // Delete purchase order by ID
             public void deleteOrder(long orderId){ 
                 var request = new RestRequest(Method.DELETE); 
                 request.Resource = "/store/order/{orderId}";
                 request.AddHeader("Accept", "application/json");
-
+                request.AddParameter("orderId",orderId);
+                
             }
 
         }
@@ -122,60 +150,77 @@ namespace RestClient
                 this._restClient = new RestSharp.RestClient("http://petstore.swagger.io/v2");
             }
 
-            public void createUser(User body){ 
+            // Create user
+            public void createUser(User user){ 
                 var request = new RestRequest(Method.POST); 
                 request.Resource = "/user";
                 request.AddHeader("Accept", "application/json");
-
+                request.AddBody(user);
+                
             }
 
-            public void createUsersWithArrayInput(User[] body){ 
+            // Creates list of users with given input array
+            public void createUsersWithArrayInput(User[] user){ 
                 var request = new RestRequest(Method.POST); 
                 request.Resource = "/user/createWithArray";
                 request.AddHeader("Accept", "application/json");
-
+                request.AddBody(user);
+                
             }
 
-            public void createUsersWithListInput(User[] body){ 
+            // Creates list of users with given input array
+            public void createUsersWithListInput(User[] user){ 
                 var request = new RestRequest(Method.POST); 
                 request.Resource = "/user/createWithList";
                 request.AddHeader("Accept", "application/json");
-
+                request.AddBody(user);
+                
             }
 
-            public void loginUser(string username, string password){ 
+            // Logs user into the system
+            public string loginUser(string username, string password){ 
                 var request = new RestRequest(Method.GET); 
                 request.Resource = "/user/login";
                 request.AddHeader("Accept", "application/json");
-
+                request.AddQueryParameter("username",username); // Array geldiginde sorun!!!!!!
+                request.AddQueryParameter("password",password); // Array geldiginde sorun!!!!!!
+                return _restClient.Execute(request).Content;
             }
 
+            // Logs out current logged in user session
             public void logoutUser(){ 
                 var request = new RestRequest(Method.GET); 
                 request.Resource = "/user/logout";
                 request.AddHeader("Accept", "application/json");
-
+                
             }
 
-            public void getUserByName(string username){ 
+            // Get user by user name
+            public User getUserByName(string username){ 
                 var request = new RestRequest(Method.GET); 
                 request.Resource = "/user/{username}";
                 request.AddHeader("Accept", "application/json");
-
+                request.AddParameter("username",username);
+                return _restClient.Execute<User>(request).Data;
             }
 
-            public void updateUser(string username, User body){ 
+            // Updated user
+            public void updateUser(string username, User user){ 
                 var request = new RestRequest(Method.PUT); 
                 request.Resource = "/user/{username}";
                 request.AddHeader("Accept", "application/json");
-
+                request.AddParameter("username",username);
+                request.AddBody(user);
+                
             }
 
+            // Delete user
             public void deleteUser(string username){ 
                 var request = new RestRequest(Method.DELETE); 
                 request.Resource = "/user/{username}";
                 request.AddHeader("Accept", "application/json");
-
+                request.AddParameter("username",username);
+                
             }
 
         }

@@ -22,11 +22,15 @@ namespace RestClient
             }
 
             {{#each this.operations}}
-            public void {{name}}({{this.parameterString}}){ 
+            // {{this.summary}}
+            public {{getFunctionReturnType this}} {{name}}({{this.parameterString}}){ 
                 var request = new RestRequest(Method.{{this.method}}); 
                 request.Resource = "{{path}}";
                 request.AddHeader("Accept", "application/json");
-
+                {{#each this.requests}}
+                {{this.requestFunction}}
+                {{/each}}
+                {{getFunctionReturn this}}
             }
 
             {{/each}}

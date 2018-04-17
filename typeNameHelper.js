@@ -1,48 +1,48 @@
-module.exports.GetTypeName = function(prop) {
-  if (prop.type) {
-    if (prop.type === "array") {
-      return this.GetTypeName(prop.items);
+module.exports.GetTypeName = function (prop) {
+    if (prop.type) {
+        if (prop.type === "array") {
+            return this.GetTypeName(prop.items);
+        } else {
+            if (prop.format) {
+                return types[prop.format];
+            } else {
+                return types[prop.type];
+            }
+        }
+    } else if (prop.schema) {
+        if (prop.schema.type) {
+            return this.GetTypeName(prop.schema);
+        } else if (prop.schema.$ref) {
+            return GetTypeFromRef(prop.schema.$ref);
+        } else {
+            return "** Empty Schema **";
+        }
+    } else if (prop.$ref) {
+        return GetTypeFromRef(prop.$ref);
     } else {
-      if (prop.format) {
-        return types[prop.format];
-      } else {
-        return types[prop.type];
-      }
+        return "** Empty type,schema,ref **";
     }
-  } else if (prop.schema) {
-    if (prop.schema.type) {
-      return this.GetTypeName(prop.schema);
-    } else if (prop.schema.$ref) {
-      return GetTypeFromRef(prop.schema.$ref);
-    } else {
-      return "** Empty Schema **";
-    }
-  } else if (prop.$ref) {
-    return GetTypeFromRef(prop.$ref);
-  } else {
-    return "** Empty type,schema,ref **"
-  }
 };
 
 const types = {
-  int16: "short",
-  int32: "int",
-  int64: "long",
-  float: "float",
-  double: "double",
-  number: "Decimal",
-  string: "string",
-  byte: "byte",
-  boolean: "bool",
-  date: "DateTime",
-  file: "File",
-  object: "Object",
-  "date-time": "DateTime"
+    int16: "short",
+    int32: "int",
+    int64: "long",
+    float: "float",
+    double: "double",
+    number: "Decimal",
+    string: "string",
+    byte: "byte",
+    boolean: "bool",
+    date: "DateTime",
+    file: "File",
+    object: "Object",
+    "date-time": "DateTime"
 };
 
 function GetTypeFromRef(_ref) {
-  _ref = String(_ref);
-  return _ref[0] === "#" ? _ref.slice(_ref.lastIndexOf("/") + 1) : _ref;
+    _ref = String(_ref);
+    return _ref[0] === "#" ? _ref.slice(_ref.lastIndexOf("/") + 1) : _ref;
 }
 
 // Unused function
