@@ -11,279 +11,251 @@ using RestSharp;
 
 namespace RestClient
 {
-    public class petRestClient{
-        private readonly RestSharp.RestClient _restClient;
+    namespace Services{
+        public class petRestClient{
+            private readonly RestSharp.RestClient _restClient;
 
-        public petRestClient(){
-            this._restClient = new RestSharp.RestClient("http://petstore.swagger.io/v2");
-        }
-
-        public void addPet(Pet pet){
-            var request = new RestRequest(Method.POST);
-            request.Resource = "/pet";
-            request.AddHeader("Accept", "application/json");
-            request.AddBody(pet); //Body parameter
-
-        }
-
-        public void updatePet(Pet pet){
-            var request = new RestRequest(Method.PUT);
-            request.Resource = "/pet";
-            request.AddHeader("Accept", "application/json");
-            request.AddBody(pet); //Body parameter
-
-        }
-
-        public List<Pet> findPetsByStatus(string[] status){
-            var request = new RestRequest(Method.GET);
-            request.Resource = "/pet/findByStatus";
-            request.AddHeader("Accept", "application/json");
-            foreach(var parameter in status){
-                request.AddQueryParameter("status",parameter); //Query parameter
+            public petRestClient()
+            {
+                this._restClient = new RestSharp.RestClient("http://petstore.swagger.io/v2");
             }
 
-            return _restClient.Execute<List<Pet>>(request).Data;
-        }
+            public void addPet(Pet body){ 
+                var request = new RestRequest(Method.POST); 
+                request.Resource = "/pet";
+                request.AddHeader("Accept", "application/json");
 
-        public List<Pet> findPetsByTags(string[] tags){
-            var request = new RestRequest(Method.GET);
-            request.Resource = "/pet/findByTags";
-            request.AddHeader("Accept", "application/json");
-            foreach(var parameter in tags){
-                request.AddQueryParameter("tags",parameter); //Query parameter
             }
 
-            return _restClient.Execute<List<Pet>>(request).Data;
+            public void updatePet(Pet body){ 
+                var request = new RestRequest(Method.PUT); 
+                request.Resource = "/pet";
+                request.AddHeader("Accept", "application/json");
+
+            }
+
+            public void findPetsByStatus(string[] status){ 
+                var request = new RestRequest(Method.GET); 
+                request.Resource = "/pet/findByStatus";
+                request.AddHeader("Accept", "application/json");
+
+            }
+
+            public void findPetsByTags(string[] tags){ 
+                var request = new RestRequest(Method.GET); 
+                request.Resource = "/pet/findByTags";
+                request.AddHeader("Accept", "application/json");
+
+            }
+
+            public void getPetById(long petId){ 
+                var request = new RestRequest(Method.GET); 
+                request.Resource = "/pet/{petId}";
+                request.AddHeader("Accept", "application/json");
+
+            }
+
+            public void updatePetWithForm(long petId, string name, string status){ 
+                var request = new RestRequest(Method.POST); 
+                request.Resource = "/pet/{petId}";
+                request.AddHeader("Accept", "application/json");
+
+            }
+
+            public void deletePet(string api_key, long petId){ 
+                var request = new RestRequest(Method.DELETE); 
+                request.Resource = "/pet/{petId}";
+                request.AddHeader("Accept", "application/json");
+
+            }
+
+            public void uploadFile(long petId, string additionalMetadata, File file){ 
+                var request = new RestRequest(Method.POST); 
+                request.Resource = "/pet/{petId}/uploadImage";
+                request.AddHeader("Accept", "application/json");
+
+            }
+
         }
+        public class storeRestClient{
+            private readonly RestSharp.RestClient _restClient;
 
-        public Pet getPetById(Int64 petId){
-            var request = new RestRequest(Method.GET);
-            request.Resource = "/pet/{petId}";
-            request.AddHeader("Accept", "application/json");
-            request.AddParameter("petId",petId,ParameterType.UrlSegment); //Path parameter
+            public storeRestClient()
+            {
+                this._restClient = new RestSharp.RestClient("http://petstore.swagger.io/v2");
+            }
 
-            return _restClient.Execute<Pet>(request).Data;
+            public void getInventory(){ 
+                var request = new RestRequest(Method.GET); 
+                request.Resource = "/store/inventory";
+                request.AddHeader("Accept", "application/json");
+
+            }
+
+            public void placeOrder(Order body){ 
+                var request = new RestRequest(Method.POST); 
+                request.Resource = "/store/order";
+                request.AddHeader("Accept", "application/json");
+
+            }
+
+            public void getOrderById(long orderId){ 
+                var request = new RestRequest(Method.GET); 
+                request.Resource = "/store/order/{orderId}";
+                request.AddHeader("Accept", "application/json");
+
+            }
+
+            public void deleteOrder(long orderId){ 
+                var request = new RestRequest(Method.DELETE); 
+                request.Resource = "/store/order/{orderId}";
+                request.AddHeader("Accept", "application/json");
+
+            }
+
         }
+        public class userRestClient{
+            private readonly RestSharp.RestClient _restClient;
 
-        public void updatePetWithForm(Int64 petId, string? name, string? status){
-            var request = new RestRequest(Method.POST);
-            request.Resource = "/pet/{petId}";
-            request.AddHeader("Accept", "application/json");
-            request.AddParameter("petId",petId,ParameterType.UrlSegment); //Path parameter
+            public userRestClient()
+            {
+                this._restClient = new RestSharp.RestClient("http://petstore.swagger.io/v2");
+            }
 
-        }
+            public void createUser(User body){ 
+                var request = new RestRequest(Method.POST); 
+                request.Resource = "/user";
+                request.AddHeader("Accept", "application/json");
 
-        public void deletePet(string? api_key, Int64 petId){
-            var request = new RestRequest(Method.DELETE);
-            request.Resource = "/pet/{petId}";
-            request.AddHeader("Accept", "application/json");
-            request.AddParameter("petId",petId,ParameterType.UrlSegment); //Path parameter
+            }
 
-        }
+            public void createUsersWithArrayInput(User[] body){ 
+                var request = new RestRequest(Method.POST); 
+                request.Resource = "/user/createWithArray";
+                request.AddHeader("Accept", "application/json");
 
-        public ApiResponse uploadFile(Int64 petId, string? additionalMetadata, File? file){
-            var request = new RestRequest(Method.POST);
-            request.Resource = "/pet/{petId}/uploadImage";
-            request.AddHeader("Accept", "application/json");
-            request.AddParameter("petId",petId,ParameterType.UrlSegment); //Path parameter
+            }
 
-            return _restClient.Execute<ApiResponse>(request).Data;
+            public void createUsersWithListInput(User[] body){ 
+                var request = new RestRequest(Method.POST); 
+                request.Resource = "/user/createWithList";
+                request.AddHeader("Accept", "application/json");
+
+            }
+
+            public void loginUser(string username, string password){ 
+                var request = new RestRequest(Method.GET); 
+                request.Resource = "/user/login";
+                request.AddHeader("Accept", "application/json");
+
+            }
+
+            public void logoutUser(){ 
+                var request = new RestRequest(Method.GET); 
+                request.Resource = "/user/logout";
+                request.AddHeader("Accept", "application/json");
+
+            }
+
+            public void getUserByName(string username){ 
+                var request = new RestRequest(Method.GET); 
+                request.Resource = "/user/{username}";
+                request.AddHeader("Accept", "application/json");
+
+            }
+
+            public void updateUser(string username, User body){ 
+                var request = new RestRequest(Method.PUT); 
+                request.Resource = "/user/{username}";
+                request.AddHeader("Accept", "application/json");
+
+            }
+
+            public void deleteUser(string username){ 
+                var request = new RestRequest(Method.DELETE); 
+                request.Resource = "/user/{username}";
+                request.AddHeader("Accept", "application/json");
+
+            }
+
         }
     }
 
-    public class storeRestClient{
-        private readonly RestSharp.RestClient _restClient;
+    namespace Models{
+        public class Order{
+            public long id { get; set; }
 
-        public storeRestClient(){
-            this._restClient = new RestSharp.RestClient("http://petstore.swagger.io/v2");
-        }
+            public long petId { get; set; }
 
-        public Object getInventory(){
-            var request = new RestRequest(Method.GET);
-            request.Resource = "/store/inventory";
-            request.AddHeader("Accept", "application/json");
+            public int quantity { get; set; }
 
-            return _restClient.Execute(request).Content;
-        }
+            public DateTime shipDate { get; set; }
 
-        public Order placeOrder(Order order){
-            var request = new RestRequest(Method.POST);
-            request.Resource = "/store/order";
-            request.AddHeader("Accept", "application/json");
-            request.AddBody(order); //Body parameter
+            public string status { get; set; }
 
-            return _restClient.Execute<Order>(request).Data;
-        }
-
-        public Order getOrderById(Int64 orderId){
-            var request = new RestRequest(Method.GET);
-            request.Resource = "/store/order/{orderId}";
-            request.AddHeader("Accept", "application/json");
-            request.AddParameter("orderId",orderId,ParameterType.UrlSegment); //Path parameter
-
-            return _restClient.Execute<Order>(request).Data;
-        }
-
-        public void deleteOrder(Int64 orderId){
-            var request = new RestRequest(Method.DELETE);
-            request.Resource = "/store/order/{orderId}";
-            request.AddHeader("Accept", "application/json");
-            request.AddParameter("orderId",orderId,ParameterType.UrlSegment); //Path parameter
-
-        }
-    }
-
-    public class userRestClient{
-        private readonly RestSharp.RestClient _restClient;
-
-        public userRestClient(){
-            this._restClient = new RestSharp.RestClient("http://petstore.swagger.io/v2");
-        }
-
-        public void createUser(User user){
-            var request = new RestRequest(Method.POST);
-            request.Resource = "/user";
-            request.AddHeader("Accept", "application/json");
-            request.AddBody(user); //Body parameter
+            public bool complete { get; set; }
 
         }
 
-        public void createUsersWithArrayInput(User[] user){
-            var request = new RestRequest(Method.POST);
-            request.Resource = "/user/createWithArray";
-            request.AddHeader("Accept", "application/json");
-            request.AddBody(user); //Body parameter
+        public class User{
+            public long id { get; set; }
+
+            public string username { get; set; }
+
+            public string firstName { get; set; }
+
+            public string lastName { get; set; }
+
+            public string email { get; set; }
+
+            public string password { get; set; }
+
+            public string phone { get; set; }
+
+            public int userStatus { get; set; }
 
         }
 
-        public void createUsersWithListInput(User[] user){
-            var request = new RestRequest(Method.POST);
-            request.Resource = "/user/createWithList";
-            request.AddHeader("Accept", "application/json");
-            request.AddBody(user); //Body parameter
+        public class Category{
+            public long id { get; set; }
+
+            public string name { get; set; }
 
         }
 
-        public string loginUser(string username, string password){
-            var request = new RestRequest(Method.GET);
-            request.Resource = "/user/login";
-            request.AddHeader("Accept", "application/json");
-            request.AddQueryParameter("username",username); //Query parameter
-            request.AddQueryParameter("password",password); //Query parameter
+        public class Tag{
+            public long id { get; set; }
 
-            return _restClient.Execute(request).Content;
-        }
-
-        public void logoutUser(){
-            var request = new RestRequest(Method.GET);
-            request.Resource = "/user/logout";
-            request.AddHeader("Accept", "application/json");
+            public string name { get; set; }
 
         }
 
-        public User getUserByName(string username){
-            var request = new RestRequest(Method.GET);
-            request.Resource = "/user/{username}";
-            request.AddHeader("Accept", "application/json");
-            request.AddParameter("username",username,ParameterType.UrlSegment); //Path parameter
+        public class Pet{
+            public long id { get; set; }
 
-            return _restClient.Execute<User>(request).Data;
-        }
+            public Category category { get; set; }
 
-        public void updateUser(string username, User user){
-            var request = new RestRequest(Method.PUT);
-            request.Resource = "/user/{username}";
-            request.AddHeader("Accept", "application/json");
-            request.AddParameter("username",username,ParameterType.UrlSegment); //Path parameter
-            request.AddBody(user); //Body parameter
+            public string name { get; set; }
+
+            public string[] photoUrls { get; set; }
+
+            public Tag[] tags { get; set; }
+
+            public string status { get; set; }
 
         }
 
-        public void deleteUser(string username){
-            var request = new RestRequest(Method.DELETE);
-            request.Resource = "/user/{username}";
-            request.AddHeader("Accept", "application/json");
-            request.AddParameter("username",username,ParameterType.UrlSegment); //Path parameter
+        public class ApiResponse{
+            public int code { get; set; }
+
+            public string type { get; set; }
+
+            public string message { get; set; }
 
         }
-    }
-
-    public class Order {
-
-        public Int64 id{ get; set;}
-
-        public Int64 petId{ get; set;}
-
-        public int quantity{ get; set;}
-
-        public DateTime shipDate{ get; set;}
-
-        public string status{ get; set;}
-
-        public bool complete{ get; set;}
-
-    }
-
-    public class User {
-
-        public Int64 id{ get; set;}
-
-        public string username{ get; set;}
-
-        public string firstName{ get; set;}
-
-        public string lastName{ get; set;}
-
-        public string email{ get; set;}
-
-        public string password{ get; set;}
-
-        public string phone{ get; set;}
-
-        public int userStatus{ get; set;}
-
-    }
-
-    public class Category {
-
-        public Int64 id{ get; set;}
-
-        public string name{ get; set;}
-
-    }
-
-    public class Tag {
-
-        public Int64 id{ get; set;}
-
-        public string name{ get; set;}
-
-    }
-
-    public class Pet {
-
-        public Int64 id{ get; set;}
-
-        public Category category{ get; set;}
-
-        public string name{ get; set;}
-
-        public string[] photoUrls{ get; set;}
-
-        public Tag[] tags{ get; set;}
-
-        public string status{ get; set;}
-
-    }
-
-    public class ApiResponse {
-
-        public int code{ get; set;}
-
-        public string type{ get; set;}
-
-        public string message{ get; set;}
 
     }
 
 }
+
+

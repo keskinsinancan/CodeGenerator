@@ -1,0 +1,51 @@
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.IO;
+using RestSharp;
+
+// -------------------------------- //
+// IMPORTANT!!!!!!                  //
+// Import RestSharp from NUGET!!!   //
+// -------------------------------- //
+
+namespace RestClient
+{
+    namespace Services{
+        {{#each this.apis}}
+        public class {{name}}RestClient{
+            private readonly RestSharp.RestClient _restClient;
+
+            public {{name}}RestClient()
+            {
+                this._restClient = new RestSharp.RestClient("{{../resourcePath}}");
+            }
+
+            {{#each this.operations}}
+            public void {{name}}({{this.parameterString}}){ 
+                var request = new RestRequest(Method.{{this.method}}); 
+                request.Resource = "{{path}}";
+                request.AddHeader("Accept", "application/json");
+
+            }
+
+            {{/each}}
+        }
+        {{/each}}
+    }
+
+    namespace Models{
+        {{#each this.models}}
+        public class {{this.name}}{
+            {{#each this.value.properties}}
+            public {{this.dataType.typeName}} {{this.name}} { get; set; }
+
+            {{/each}}
+        }
+
+        {{/each}}
+    }
+
+}
+
+
