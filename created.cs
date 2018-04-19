@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 using RestSharp;
+using Newtonsoft.Json;
 using RestClient.Models;
 
 // -------------------------------- //
 // IMPORTANT!!!!!!                  //
 // Import RestSharp from NUGET!!!   //
+// Import Newtonsoft from NUGET!!!  //
 // -------------------------------- //
 
 namespace RestClient
@@ -45,7 +47,7 @@ namespace RestClient
                 request.Resource = "/pet/findByStatus";
                 request.AddHeader("Accept", "application/json");
                 foreach( var p in status){ request.AddQueryParameter("status", p);  } 
-                return _restClient.Execute<List<Pet>>(request).Data;
+                return JsonConvert.DeserializeObject<List<Pet>>(_restClient.Execute(request).Content);
             }
 
             // Finds Pets by tags
@@ -54,7 +56,7 @@ namespace RestClient
                 request.Resource = "/pet/findByTags";
                 request.AddHeader("Accept", "application/json");
                 foreach( var p in tags){ request.AddQueryParameter("tags", p);  } 
-                return _restClient.Execute<List<Pet>>(request).Data;
+                return JsonConvert.DeserializeObject<List<Pet>>(_restClient.Execute(request).Content);
             }
 
             // Find pet by ID
@@ -63,7 +65,7 @@ namespace RestClient
                 request.Resource = "/pet/{petId}";
                 request.AddHeader("Accept", "application/json");
                 request.AddUrlSegment("petId",petId);
-                return _restClient.Execute<Pet>(request).Data;
+                return JsonConvert.DeserializeObject<Pet>(_restClient.Execute(request).Content);
             }
 
             // Updates a pet in the store with form data
@@ -95,7 +97,7 @@ namespace RestClient
                 request.AddUrlSegment("petId",petId);
                 if(additionalMetadata != null) { request.AddParameter("additionalMetadata",additionalMetadata); }
                 if(file != null) { request.AddParameter("file",file); }
-                return _restClient.Execute<ApiResponse>(request).Data;
+                return JsonConvert.DeserializeObject<ApiResponse>(_restClient.Execute(request).Content);
             }
 
         }
@@ -121,7 +123,7 @@ namespace RestClient
                 request.Resource = "/store/order";
                 request.AddHeader("Accept", "application/json");
                 request.AddBody(order);
-                return _restClient.Execute<Order>(request).Data;
+                return JsonConvert.DeserializeObject<Order>(_restClient.Execute(request).Content);
             }
 
             // Find purchase order by ID
@@ -130,7 +132,7 @@ namespace RestClient
                 request.Resource = "/store/order/{orderId}";
                 request.AddHeader("Accept", "application/json");
                 request.AddUrlSegment("orderId",orderId);
-                return _restClient.Execute<Order>(request).Data;
+                return JsonConvert.DeserializeObject<Order>(_restClient.Execute(request).Content);
             }
 
             // Delete purchase order by ID
@@ -202,7 +204,7 @@ namespace RestClient
                 request.Resource = "/user/{username}";
                 request.AddHeader("Accept", "application/json");
                 request.AddUrlSegment("username",username);
-                return _restClient.Execute<User>(request).Data;
+                return JsonConvert.DeserializeObject<User>(_restClient.Execute(request).Content);
             }
 
             // Updated user
@@ -230,6 +232,10 @@ namespace RestClient
     namespace Models{
         public class Order{
 
+            public Order() {
+
+            }
+
             public long id { get; set; }
 
             public long petId { get; set; }
@@ -242,12 +248,14 @@ namespace RestClient
 
             public bool complete { get; set; }
 
-            public Order() {
-
-            }
+           
         }
 
         public class User{
+
+            public User() {
+
+            }
 
             public long id { get; set; }
 
@@ -265,34 +273,40 @@ namespace RestClient
 
             public int userStatus { get; set; }
 
-            public User() {
-
-            }
+           
         }
 
         public class Category{
 
+            public Category() {
+
+            }
+
             public long id { get; set; }
 
             public string name { get; set; }
 
-            public Category() {
-
-            }
+           
         }
 
         public class Tag{
 
+            public Tag() {
+
+            }
+
             public long id { get; set; }
 
             public string name { get; set; }
 
-            public Tag() {
-
-            }
+           
         }
 
         public class Pet{
+
+            public Pet() {
+
+            }
 
             public long id { get; set; }
 
@@ -306,12 +320,14 @@ namespace RestClient
 
             public string status { get; set; }
 
-            public Pet() {
-
-            }
+           
         }
 
         public class ApiResponse{
+
+            public ApiResponse() {
+
+            }
 
             public int code { get; set; }
 
@@ -319,9 +335,7 @@ namespace RestClient
 
             public string message { get; set; }
 
-            public ApiResponse() {
-
-            }
+           
         }
 
     }

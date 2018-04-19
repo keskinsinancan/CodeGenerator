@@ -20,12 +20,12 @@ module.exports.GetFunctionReturn = function (operation) {
             var schema = response.schema;
             if (schema.type === "array") {
                 if (schema.items) {
-                    return "return _restClient.Execute<List<" + typeHelper.GetTypeName(response) + ">>(request).Data;";
+                    return "return JsonConvert.DeserializeObject<List<" + typeHelper.GetTypeName(response) + ">>(_restClient.Execute(request).Content);";
                 }else{
-                    return "return _restClient.Execute(request).Content---------------------";
+                    return "No items in schema!!!!!";
                 }
             }else if(schema.$ref){
-                return "return _restClient.Execute<" + typeHelper.GetTypeName(response) + ">(request).Data;";
+                return "return JsonConvert.DeserializeObject<" + typeHelper.GetTypeName(response) + ">(_restClient.Execute(request).Content);";
             }else{
                 return "return _restClient.Execute(request).Content;";
             }

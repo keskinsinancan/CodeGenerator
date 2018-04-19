@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 using RestSharp;
+using Newtonsoft.Json;
 using RestClient.Models;
 
 // -------------------------------- //
 // IMPORTANT!!!!!!                  //
 // Import RestSharp from NUGET!!!   //
+// Import Newtonsoft from NUGET!!!  //
 // -------------------------------- //
 
 namespace RestClient
@@ -43,13 +45,15 @@ namespace RestClient
         {{#each this.models}}
         public class {{this.name}}{
 
+            public {{this.name}}() {
+
+            }
+
             {{#each this.value.properties}}
             public {{this.dataType.typeName}} {{this.name}} { get; set; }
 
             {{/each}}
-            public {{this.name}}() {
-
-            }
+           
         }
 
         {{/each}}
