@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 using RestSharp;
+using RestClient.Models;
 
 // -------------------------------- //
 // IMPORTANT!!!!!!                  //
@@ -43,7 +44,7 @@ namespace RestClient
                 var request = new RestRequest(Method.GET); 
                 request.Resource = "/pet/findByStatus";
                 request.AddHeader("Accept", "application/json");
-                request.AddQueryParameter("status",status); // Array geldiginde sorun!!!!!!
+                foreach( var p in status){ request.AddQueryParameter("status", p);  } 
                 return _restClient.Execute<List<Pet>>(request).Data;
             }
 
@@ -52,7 +53,7 @@ namespace RestClient
                 var request = new RestRequest(Method.GET); 
                 request.Resource = "/pet/findByTags";
                 request.AddHeader("Accept", "application/json");
-                request.AddQueryParameter("tags",tags); // Array geldiginde sorun!!!!!!
+                foreach( var p in tags){ request.AddQueryParameter("tags", p);  } 
                 return _restClient.Execute<List<Pet>>(request).Data;
             }
 
@@ -61,39 +62,39 @@ namespace RestClient
                 var request = new RestRequest(Method.GET); 
                 request.Resource = "/pet/{petId}";
                 request.AddHeader("Accept", "application/json");
-                request.AddParameter("petId",petId);
+                request.AddUrlSegment("petId",petId);
                 return _restClient.Execute<Pet>(request).Data;
             }
 
             // Updates a pet in the store with form data
-            public void updatePetWithForm(long petId, string name, string status){ 
+            public void updatePetWithForm(long petId, string name = null, string status = null){ 
                 var request = new RestRequest(Method.POST); 
                 request.Resource = "/pet/{petId}";
                 request.AddHeader("Accept", "application/json");
-                request.AddParameter("petId",petId);
-                request.AddParameter("name",name);//????????
-                request.AddParameter("status",status);//????????
+                request.AddUrlSegment("petId",petId);
+                if(name != null) { request.AddParameter("name",name); }
+                if(status != null) { request.AddParameter("status",status); }
                 
             }
 
             // Deletes a pet
-            public void deletePet(string api_key, long petId){ 
+            public void deletePet(long petId, string api_key = null){ 
                 var request = new RestRequest(Method.DELETE); 
                 request.Resource = "/pet/{petId}";
                 request.AddHeader("Accept", "application/json");
-                request.AddHeader("api_key",api_key);
-                request.AddParameter("petId",petId);
+                if(api_key != null) { request.AddHeader("api_key",api_key); }
+                request.AddUrlSegment("petId",petId);
                 
             }
 
             // uploads an image
-            public ApiResponse uploadFile(long petId, string additionalMetadata, File file){ 
+            public ApiResponse uploadFile(long petId, string additionalMetadata = null, File file = null){ 
                 var request = new RestRequest(Method.POST); 
                 request.Resource = "/pet/{petId}/uploadImage";
                 request.AddHeader("Accept", "application/json");
-                request.AddParameter("petId",petId);
-                request.AddParameter("additionalMetadata",additionalMetadata);//????????
-                request.AddParameter("file",file);//????????
+                request.AddUrlSegment("petId",petId);
+                if(additionalMetadata != null) { request.AddParameter("additionalMetadata",additionalMetadata); }
+                if(file != null) { request.AddParameter("file",file); }
                 return _restClient.Execute<ApiResponse>(request).Data;
             }
 
@@ -128,7 +129,7 @@ namespace RestClient
                 var request = new RestRequest(Method.GET); 
                 request.Resource = "/store/order/{orderId}";
                 request.AddHeader("Accept", "application/json");
-                request.AddParameter("orderId",orderId);
+                request.AddUrlSegment("orderId",orderId);
                 return _restClient.Execute<Order>(request).Data;
             }
 
@@ -137,7 +138,7 @@ namespace RestClient
                 var request = new RestRequest(Method.DELETE); 
                 request.Resource = "/store/order/{orderId}";
                 request.AddHeader("Accept", "application/json");
-                request.AddParameter("orderId",orderId);
+                request.AddUrlSegment("orderId",orderId);
                 
             }
 
@@ -182,8 +183,8 @@ namespace RestClient
                 var request = new RestRequest(Method.GET); 
                 request.Resource = "/user/login";
                 request.AddHeader("Accept", "application/json");
-                request.AddQueryParameter("username",username); // Array geldiginde sorun!!!!!!
-                request.AddQueryParameter("password",password); // Array geldiginde sorun!!!!!!
+                request.AddQueryParameter("username",username);
+                request.AddQueryParameter("password",password);
                 return _restClient.Execute(request).Content;
             }
 
@@ -200,7 +201,7 @@ namespace RestClient
                 var request = new RestRequest(Method.GET); 
                 request.Resource = "/user/{username}";
                 request.AddHeader("Accept", "application/json");
-                request.AddParameter("username",username);
+                request.AddUrlSegment("username",username);
                 return _restClient.Execute<User>(request).Data;
             }
 
@@ -209,7 +210,7 @@ namespace RestClient
                 var request = new RestRequest(Method.PUT); 
                 request.Resource = "/user/{username}";
                 request.AddHeader("Accept", "application/json");
-                request.AddParameter("username",username);
+                request.AddUrlSegment("username",username);
                 request.AddBody(user);
                 
             }
@@ -219,7 +220,7 @@ namespace RestClient
                 var request = new RestRequest(Method.DELETE); 
                 request.Resource = "/user/{username}";
                 request.AddHeader("Accept", "application/json");
-                request.AddParameter("username",username);
+                request.AddUrlSegment("username",username);
                 
             }
 
@@ -228,6 +229,7 @@ namespace RestClient
 
     namespace Models{
         public class Order{
+
             public long id { get; set; }
 
             public long petId { get; set; }
@@ -240,9 +242,13 @@ namespace RestClient
 
             public bool complete { get; set; }
 
+            public Order() {
+
+            }
         }
 
         public class User{
+
             public long id { get; set; }
 
             public string username { get; set; }
@@ -259,23 +265,35 @@ namespace RestClient
 
             public int userStatus { get; set; }
 
+            public User() {
+
+            }
         }
 
         public class Category{
+
             public long id { get; set; }
 
             public string name { get; set; }
 
+            public Category() {
+
+            }
         }
 
         public class Tag{
+
             public long id { get; set; }
 
             public string name { get; set; }
 
+            public Tag() {
+
+            }
         }
 
         public class Pet{
+
             public long id { get; set; }
 
             public Category category { get; set; }
@@ -288,15 +306,22 @@ namespace RestClient
 
             public string status { get; set; }
 
+            public Pet() {
+
+            }
         }
 
         public class ApiResponse{
+
             public int code { get; set; }
 
             public string type { get; set; }
 
             public string message { get; set; }
 
+            public ApiResponse() {
+
+            }
         }
 
     }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 using RestSharp;
+using RestClient.Models;
 
 // -------------------------------- //
 // IMPORTANT!!!!!!                  //
@@ -41,10 +42,14 @@ namespace RestClient
     namespace Models{
         {{#each this.models}}
         public class {{this.name}}{
+
             {{#each this.value.properties}}
             public {{this.dataType.typeName}} {{this.name}} { get; set; }
 
             {{/each}}
+            public {{this.name}}() {
+
+            }
         }
 
         {{/each}}
